@@ -1,17 +1,16 @@
 package ecom;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DoOrder {
-    private static final String PAYMENT_STATUS_SUCCESSFUL = "Successful";
+//    private static final String PAYMENT_STATUS_SUCCESSFUL = "Successful";
 
     private static final Logger logger = Logger.getLogger(DoOrder.class.getName());
     int orderId=0;

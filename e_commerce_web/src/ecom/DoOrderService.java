@@ -4,15 +4,16 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 public class DoOrderService {
-	public static void main(String[] args) throws SQLException {
+//	public static void main(String[] args) throws SQLException {
+	public static int order(int userId) throws SQLException {
         Scanner scanner = new Scanner(System.in);
+        ProductDao product = new ProductDao();
         DoOrder od = new DoOrder();
         int Payment_method_id=0;
         String Payment_Method = null;
 
-                    System.out.print("Enter User ID: ");
-                    int userId = scanner.nextInt(); 
-                    
+                        product.listProduct();
+                        
 				        System.out.print("Enter Product ID: ");
 				        int productId = scanner.nextInt();
 				        
@@ -77,8 +78,8 @@ public class DoOrderService {
                    
                     
                   System.out.println("Exiting... Thank you!");
-                  scanner.close();
-                  return;
+//                  scanner.close();
+                  return orderId;
 
     }
 }

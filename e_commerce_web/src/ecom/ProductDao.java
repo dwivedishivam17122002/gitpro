@@ -11,7 +11,7 @@ public class ProductDao {
 //	category_id;
 //	price;
 //	stock_quantity;
-         public void addProduct(String name,int category_id,float price,int stock_quantity,String category_name) {
+         public void addProduct(String name,float price,int stock_quantity ,int category_id ,String category_name) {
         	  String query = "INSERT INTO products (name, category_id, price, stock_quantity, category_name) VALUES (?, ?, ?, ?, ?)";
         	  try(Connection con = ConnectionFactory.getInstance().getConnection();
           	    	PreparedStatement ptmt = con.prepareStatement(query)){
@@ -47,26 +47,30 @@ public class ProductDao {
        	    
          }
          
-         public void updateProduct(int productId,String category_name) {
-       	  String query = "UPDATE products SET category_name = ? WHERE product_id = ?";
+         public void updateProduct(int productId,String productName,float productPrice,int productQuantity,int categoryId,String category_name) {
+       	  String query = "UPDATE products SET name = ? , price = ? , stock_quantity = ? , category_id = ? , category_name = ? WHERE product_id = ?";
        	  try(Connection con = ConnectionFactory.getInstance().getConnection();
          	    	PreparedStatement ptmt = con.prepareStatement(query)){
-         	    	ptmt.setString(1, category_name);
-         	    	ptmt.setInt(2, productId);
+         	    	ptmt.setString(1, productName);
+         	    	ptmt.setFloat(2, productPrice);
+         	    	ptmt.setInt(3, productQuantity);
+         	    	ptmt.setInt(4, categoryId);
+         	    	ptmt.setString(5, category_name);
+         	    	ptmt.setInt(6, productId);
          	    	ptmt.executeUpdate();
-         	    	System.out.println("Product added successfully");
+         	    	System.out.println("Product updated successfully");
          	    }catch(SQLException  e) {
          	    	e.printStackTrace();
          	    }
          }
          
          public void deleteProduct(int productId) {
-       	  String query = "DELETE FROM products WHERE id =?";
+       	  String query = "DELETE FROM products WHERE product_id =?";
        	  try(Connection con = ConnectionFactory.getInstance().getConnection();
          	    	PreparedStatement ptmt = con.prepareStatement(query)){
          	    	ptmt.setInt(1, productId);
          	    	ptmt.executeUpdate();
-         	    	System.out.println("Product added successfully");
+         	    	System.out.println("Product deleted successfully");
          	    }catch(SQLException  e) {
          	    	e.printStackTrace();
          	    }

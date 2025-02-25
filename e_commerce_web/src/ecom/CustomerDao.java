@@ -6,15 +6,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class CustomerDao {
-        Connection con=null;
-        PreparedStatement ptmt=null;
-        ResultSet rs=null;
+        static Connection con=null;
+        static PreparedStatement ptmt=null;
+        static ResultSet rs=null;
         
         public CustomerDao() {
         	
         }
         
-        private Connection getConnection() throws SQLException{
+        private static Connection getConnection() throws SQLException{
         	Connection conn;
         	conn = ConnectionFactory.getInstance().getConnection();
         	return conn;
@@ -36,7 +36,7 @@ public class CustomerDao {
         		ptmt.setString(1, customerBean.getName());
         		ptmt.setString(2, customerBean.getEmail());
         		ptmt.setString(3, customerBean.getPassword());
-        		ptmt.setInt(4, customerBean.getPhone_no());
+        		ptmt.setString(4, customerBean.getPhone_no());
         		ptmt.setString(5, customerBean.getAddress());
         		
         		ptmt.executeUpdate();
@@ -59,7 +59,7 @@ public class CustomerDao {
         		}
         	}
         
-        public void update(String name,int id) {
+        public void updateName(String name,int id) {
         	try {
         	con = getConnection();
         	String queryString = "UPDATE customers SET Name=? WHERE customer_id=?";
@@ -84,7 +84,132 @@ public class CustomerDao {
         	}
         	}
         	}
+        
+        public void updatePhoneNo(String Phone,int id) {
+        	try {
+        	con = getConnection();
+        	String queryString = "UPDATE customers SET phone_number=? WHERE customer_id=?";
+        	ptmt = con.prepareStatement(queryString);
+        	ptmt.setString(1, Phone);
+        	ptmt.setInt(2, id);
+        	ptmt.executeUpdate();
+        	System.out.println("Table Updated Successfully");
+        	} catch (SQLException e) {
+        	e.printStackTrace();
+        	} finally {
+        	try {
+        	if (ptmt != null)
+        	ptmt.close();
+        	if (con != null)
+        	con.close();
+        	}
+        	catch (SQLException e) {
+        	e.printStackTrace();
+        	} catch (Exception e) {
+        	e.printStackTrace();
+        	}
+        	}
+        	}
+        
+        public boolean updateEmail(String email,int id) {
+        	 PreparedStatement checkStmt=null;
+        	 ResultSet rs=null;
+        	try {
+        	con = getConnection();
+            String checkQuery = "SELECT COUNT(*) FROM customers WHERE email_id = ?";
+                   checkStmt = con.prepareStatement(checkQuery);
+                	 checkStmt.setString(1, email);
+                     rs = checkStmt.executeQuery();
+                     rs.next();
+            if (rs.getInt(1) > 0) {
+                System.out.println("This email is  already registered!");
+                System.out.println("Your email is duplicate!");
+                return false;
+            } else {
+            	String queryString = "UPDATE customers SET email_id=? WHERE customer_id=?";
+            	ptmt = con.prepareStatement(queryString);
+            	ptmt.setString(1, email);
+            	ptmt.setInt(2, id);
+            	ptmt.executeUpdate();
+            	
+                }
+        	
+        	System.out.println("Table Updated Successfully");
+        	return true;
+        	} catch (SQLException e) {
+        	e.printStackTrace();
+        	} finally {
+        	try {
+        	if (ptmt != null)
+        		ptmt.close();
+        	if (con != null)
+        	con.close();
+        	if(checkStmt != null)
+        		checkStmt.close();
+        	if(rs != null)
+        		rs.close();
+        	}
+        	catch (SQLException e) {
+        	e.printStackTrace();
+        	} catch (Exception e) {
+        	e.printStackTrace();
+        	}
+        	}
+			return true;
+        	}
+        
+        public void updateAddress(String address,int id) {
+        	try {
+        	con = getConnection();
+        	String queryString = "UPDATE customers SET address=? WHERE customer_id=?";
+        	ptmt = con.prepareStatement(queryString);
+        	ptmt.setString(1, address);
+        	ptmt.setInt(2, id);
+        	ptmt.executeUpdate();
+        	System.out.println("Table Updated Successfully");
+        	} catch (SQLException e) {
+        	e.printStackTrace();
+        	} finally {
+        	try {
+        	if (ptmt != null)
+        	ptmt.close();
+        	if (con != null)
+        	con.close();
+        	}
+        	catch (SQLException e) {
+        	e.printStackTrace();
+        	} catch (Exception e) {
+        	e.printStackTrace();
+        	}
+        	}
+        	}
           
+        public void changePassword(String password,int id) {
+        	try {
+        	con = getConnection();
+        	String queryString = "UPDATE customers SET password=? WHERE customer_id=?";
+        	ptmt = con.prepareStatement(queryString);
+        	ptmt.setString(1, password);
+        	ptmt.setInt(2, id);
+        	ptmt.executeUpdate();
+        	System.out.println("Table Updated Successfully");
+        	} catch (SQLException e) {
+        	e.printStackTrace();
+        	} finally {
+        	try {
+        	if (ptmt != null)
+        	ptmt.close();
+        	if (con != null)
+        	con.close();
+        	}
+        	catch (SQLException e) {
+        	e.printStackTrace();
+        	} catch (Exception e) {
+        	e.printStackTrace();
+        	}
+        	}
+        	}
+        
         
         public void delete(int customer_id) {
         	try {
@@ -149,7 +274,7 @@ public class CustomerDao {
         	}
         }
         
-        public void getCustomerById(int id) {
+        public static void getCustomerById(int id) {
         	String query = "SELECT * FROM customers WHERE customer_id = ?";
         	try{
         		con = getConnection();

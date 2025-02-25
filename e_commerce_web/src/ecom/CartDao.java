@@ -27,7 +27,7 @@ public class CartDao {
 
 	        if (rs.next()) {
 	            String userName = rs.getString("name");
-	            System.out.println("Hello, " + userName + "! Welcome to the Cart App.");
+	            System.out.println("Hello, " + userName + " ! Welcome to the Cart App.");
 	        } else {
 	            System.out.println("User not found with ID: " + userId);
 	        }
@@ -127,7 +127,12 @@ public class CartDao {
             insertCartStmt.setDouble(7, totalPrice);
 
             int rowsInserted = insertCartStmt.executeUpdate();
-            System.out.println("Product added to cart successfully!");
+       
+            if (rowsInserted > 0) {
+                System.out.println("✅ Product added to cart successfully.");
+            } else {
+                System.out.println("❌ Failed to add product to cart.");
+            }
 
             // Step 5: Update product stock
 //            String updateStockQuery = "UPDATE products SET stock_quantity = stock_quantity - ? WHERE product_id = ?";
@@ -189,7 +194,7 @@ public class CartDao {
     
     // Display all items in the user's cart
     public void displayUserCart(int userId) {
-        String query = "SELECT p.name, c.quantity, c.totalPrice FROM cart c JOIN products p ON c.product_id = p.product_id WHERE c.user_id = ?";
+        String query = "SELECT c.cart_id ,p.name, c.quantity, c.totalPrice FROM cart c JOIN products p ON c.product_id = p.product_id WHERE c.user_id = ?";
         try (Connection con = ConnectionFactory.getInstance().getConnection();
              PreparedStatement ps = con.prepareStatement(query)) {
             ps.setInt(1, userId);
@@ -199,6 +204,7 @@ public class CartDao {
 
                 while (rs.next()) {
                     isEmpty = false;
+                    System.out.println("Cart Id: " + rs.getString("cart_id"));
                     System.out.println("Product Name: " + rs.getString("name"));
                     System.out.println("Quantity: " + rs.getInt("quantity"));
                     System.out.println("Total Price: $" + rs.getDouble("totalPrice"));
@@ -214,8 +220,30 @@ public class CartDao {
         }
     }
     
+    public void updateCart(int userId,  int newQuantity,int cartid) throws SQLException {
+    	String updateQuery = "UPDATE cart SET quantity = ? WHERE user_id = ? AND cart_id = ?";
+        try (Connection con = ConnectionFactory.getInstance().getConnection();
+             PreparedStatement ps = con.prepareStatement(updateQuery)) {
+            ps.setInt(1, newQuantity);
+            ps.setInt(2, userId);
+            ps.setInt(3, cartid);
+            
+            	int rowsUpdated = ps.executeUpdate();
+                if (rowsUpdated > 0) {
+                    System.out.println("✅ Cart updated successfully.");
+                } else {
+                    System.out.println("❌ No matching item found in your cart.");
+                }
+                
+            }
+         catch (SQLException e) {
+            e.printStackTrace();
+        }
+       
+    }
+    
  // Method to delete a product from the cart and update stock
-    public void deleteFromCart(int userId, int productId) {
+    public void deleteFromCart(int userId, int productId,int cartId) {
         Connection con = null;
         PreparedStatement checkCartStmt = null;
         PreparedStatement deleteCartStmt = null;
@@ -237,22 +265,28 @@ public class CartDao {
                 int quantityInCart = rs.getInt("quantity");
 
                 // Step 2: Delete the product from the cart
-                String deleteCartQuery = "DELETE FROM cart WHERE user_id = ? AND product_id = ?";
+                String deleteCartQuery = "DELETE FROM cart WHERE user_id = ? AND product_id = ? AND cart_id = ?";
                 deleteCartStmt = con.prepareStatement(deleteCartQuery);
                 deleteCartStmt.setInt(1, userId);
                 deleteCartStmt.setInt(2, productId);
+                deleteCartStmt.setInt(3, cartId);
 
                 int rowsDeleted = deleteCartStmt.executeUpdate();
-                System.out.println("Product deleted from cart successfully!");
+             
+                if (rowsDeleted > 0) {
+                    System.out.println("✅ Product removed from cart successfully.");
+                } else {
+                    System.out.println("❌ No product found in cart.");
+                }
 
                 // Step 3: Restore the stock quantity in the products table
-                String updateStockQuery = "UPDATE products SET stock_quantity = stock_quantity + ? WHERE product_id = ?";
-                updateStockStmt = con.prepareStatement(updateStockQuery);
-                updateStockStmt.setInt(1, quantityInCart);
-                updateStockStmt.setInt(2, productId);
-
-                int rowsUpdated = updateStockStmt.executeUpdate();
-                System.out.println("Product stock updated successfully!");
+//                String updateStockQuery = "UPDATE products SET stock_quantity = stock_quantity + ? WHERE product_id = ?";
+//                updateStockStmt = con.prepareStatement(updateStockQuery);
+//                updateStockStmt.setInt(1, quantityInCart);
+//                updateStockStmt.setInt(2, productId);
+//
+////                int rowsUpdated = updateStockStmt.executeUpdate();
+//                System.out.println("Product stock updated successfully!");
 
                 con.commit(); // Commit the transaction
             } else {

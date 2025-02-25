@@ -4,7 +4,7 @@ public class CustomerBean {
            String name;
            String email;
            String password;
-           int phone_no;
+           String phone_no;
            String address;
            
            public CustomerBean() {
@@ -28,10 +28,10 @@ public class CustomerBean {
 		public void setPassword(String password) {
 			this.password = password;
 		}
-		public int getPhone_no() {
+		public String getPhone_no() {
 			return phone_no;
 		}
-		public void setPhone_no(int phone_no) {
+		public void setPhone_no(String phone_no) {
 			this.phone_no = phone_no;
 		}
 		public String getAddress() {
@@ -40,7 +40,7 @@ public class CustomerBean {
 		public void setAddress(String address) {
 			this.address = address;
 		}
-		public CustomerBean(String name, String email, String password, int phone_no,String address) {
+		public CustomerBean(String name, String email, String password, String phone_no,String address) {
         	   this.name=name;
         	   this.email=email;
         	   this.password=password;

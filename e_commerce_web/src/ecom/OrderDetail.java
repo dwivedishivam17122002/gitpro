@@ -7,13 +7,14 @@ import java.sql.SQLException;
 
 public class OrderDetail {
     
-    public void ShowOrder() throws SQLException {
+    public void ShowOrder(int userId) throws SQLException {
     	Connection conn = ConnectionFactory.getInstance().getConnection();
         try  {
-        	PreparedStatement stmt = conn.prepareStatement("SELECT * FROM orders");
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
+        	PreparedStatement stmt = conn.prepareStatement("select * from orders where user_id=?");
+        	stmt.setInt(1, userId);
+        	ResultSet rs = stmt.executeQuery();
+             
+             while(rs.next()) {
                 System.out.println("Order Details:");
                 System.out.println("Order ID: " + rs.getInt("order_id"));
                 System.out.println("User ID: " + rs.getInt("user_id"));
@@ -28,16 +29,20 @@ public class OrderDetail {
                 System.out.println("Product Name: " + rs.getString("product_name"));
                 System.out.println("Product Price: " + rs.getInt("product_price"));
                 System.out.println("Payment id: " + rs.getInt("payment_id"));
-            } else {
-                System.out.println("Order not found.");
-            }
+                System.out.println("!-------------------------------------------------------------!");
+            } 
+             if(!rs.next()) {
+            	 System.out.println("Order not found.");
+             }
+             
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    public void cancelOrder(int orderId) throws SQLException {
+    public void cancelOrder(int userId,int orderId) throws SQLException {
     	Connection conn = ConnectionFactory.getInstance().getConnection();
-        PreparedStatement checkStatusStmt = null, updateStatusStmt = null, restoreStockStmt = null;
+        PreparedStatement checkStatusStmt = null, updateStatusStmt = null, restoreStockStmt = null,deleteOrderStmt = null;
         ResultSet rs = null;
         
         try {
@@ -70,7 +75,12 @@ public class OrderDetail {
                 "SET p.stock = p.stock + oi.quantity WHERE oi.order_id = ?");
             restoreStockStmt.setInt(1, orderId);
             restoreStockStmt.executeUpdate();
-
+           //step 4: Delete order
+            deleteOrderStmt = conn.prepareStatement("Delete from orders where orderId = ? and userId = ?");
+            deleteOrderStmt.setInt(1, orderId);
+            deleteOrderStmt.setInt(2, userId);
+            deleteOrderStmt.executeUpdate();
+            
             conn.commit();
             System.out.println("Order cancelled successfully! Stock restored.");
 
