@@ -18,7 +18,8 @@ public class Menu {
 			    System.out.println("2. Categories Opration");
 			    System.out.println("3. Cart opration");
 			    System.out.println("4. Do Order");
-			    System.out.println("5. Order detail"); 
+			    System.out.println("5. Order detail");
+//			    System.out.println("6. Give Rating To Product");
 			    System.out.println("6. Update User");
 			    System.out.println("7. Show Profile.");
 			    System.out.println("8. Logout");
@@ -34,7 +35,13 @@ public class Menu {
 			    switch (choice) {
 			        case 1:
 			            System.out.println("📦 Displaying Products...");
-			            product.listProduct();
+			            int productId =product.listProduct();
+			            System.out.println("Show review : ");
+			            if(productId == 0) {
+			            	System.out.println("Wrong Product Id");
+			            }else {
+			            	ReviewId.showReviewsByProduct(productId);
+			            }
 			            break;
 			            
 			        case 2:

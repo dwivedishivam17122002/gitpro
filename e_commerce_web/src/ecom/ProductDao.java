@@ -27,11 +27,13 @@ public class ProductDao {
           	    }
           }
          
-         public void listProduct() {
+         public int listProduct() {
+        	 int productId = 0;
        	  String query = "SELECT * FROM products";
        	    try(Connection con = ConnectionFactory.getInstance().getConnection();
        	    	PreparedStatement ptmt = con.prepareStatement(query);
        	    	ResultSet rs = ptmt.executeQuery()){
+       	         productId = rs.getInt("product_id");
        	    	while(rs.next()) {
        	    		System.out.println("Product Id: "+rs.getInt("product_id"));
        	    		System.out.println("Product Name: "+rs.getString("name"));
@@ -44,7 +46,7 @@ public class ProductDao {
        	    }catch(SQLException  e) {
        	    	e.printStackTrace();
        	    }
-       	    
+       	    return productId;
          }
          
          public void updateProduct(int productId,String productName,float productPrice,int productQuantity,int categoryId,String category_name) {

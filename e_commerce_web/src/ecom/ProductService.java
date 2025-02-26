@@ -40,6 +40,11 @@ public class ProductService {
   			 int productQuantity =sc.nextInt();
   			 
    			System.out.println("Enter Category Id");
+   			System.out.println("If you do'nt know categories Id Then first press 1 .. ohterwise enter categories Id");
+   			int ncategoryId = sc.nextInt();
+   			if(ncategoryId == 1) {
+   				
+   			}
   			 int categoryId =sc.nextInt();
   			 
   			sc.nextLine();
@@ -84,7 +89,7 @@ public class ProductService {
    			 break;
    		 case 5:
    			 System.out.println("Exiting... Thank you!");
-                sc.close();
+//                sc.close();
                 return;
    		 default:
                 System.out.println("Invalid choice, please try again.");
