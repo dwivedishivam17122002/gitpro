@@ -23,7 +23,7 @@ public class UserAuthentication {
 		                return role;
 		            }else {
 		            	System.out.println("❌ No user found with this email.");
-	                    return "USER_NOT_FOUND"; // Return error code
+	                    return null; // Return error code
 		            }
 	           }
 
@@ -36,5 +36,6 @@ public class UserAuthentication {
 //	        	rs.close();
 
 	    //	        }
+		 return null;
 	  }
 }
